@@ -20,10 +20,8 @@ The state space has 37 dimensions and contains the agent's velocity, along with 
 
 The task is episodic, and in order to solve the environment, the agent must get an average score of +13 over 100 consecutive episodes.
 
-
-
 ### 2. Establishing Baseline
-Before building an agent that learns, I started by testing an agent that selects actions randomly at each time step.
+To see if the agent interacts with the simulated environment, it was tested by performing random actions.
 
 ```python
 env_info = env.reset(train_mode=False)[brain_name] # reset the environment
@@ -45,13 +43,12 @@ print("Score: {}".format(score))
 
 Running this agent a few times resulted in scores from -2 to 2. Obviously randomness doens't help to reach a score of +13.
 
-
 ### 3. Implementation of a Learning Algorithm
-Agents use a policy to decide which actions to take within an environment. The primary objective of the learning algorithm is to find an optimal policy&mdash;i.e., a policy that maximizes the reward for the agent. Since the effects of possible actions aren't known in advance, the optimal policy must be discovered by interacting with the environment and recording observations. Therefore, the agent "learns" the policy through a process of trial-and-error that iteratively maps various environment states to the actions that yield the highest reward. This type of algorithm is called **Q-Learning**.
+Agents use a policy to decide which actions to take next within the environment. The primary goal of the learning algorithm is to find an optimal policy&mdash;i.e., a policy which maximizes the returned reward for the agent. Since the effects of possible actions aren't known in advance, the optimal policy must be discovered by interacting with the environment and recording observations. Therefore, the agent "learns" the policy through the principle of "carrot and stick" that iteratively maps various environment states to the actions that yield the highest reward. This type of algorithm is called **Q-Learning**.
 
-As for constructing the Q-Learning algorithm, the general approach is to implement a handful of different components, then run a series of tests to determine which combination of components and which hyperparameters yield the best results.
+The general approach to generate the Q-Learning algorithm is to implement the basic algorithm structure, add different components and run various tests with changing hyperparameters to yield the best results.
 
-In the following sections, I'll describe each component of the algorithm in detail.
+In the following sections, each component of the algorithm is described in detail.
 
 #### Q-Function
 To discover an optimal policy, a Q-function is used. The Q-function calculates the expected reward `R` for all possible actions `A` in all possible states `S`.
@@ -67,22 +64,20 @@ In order to discount returns at future time steps, the Q-function can be expande
 <img src="images/optimal-action-value-function.png" width="65%" align="top-left" alt="" title="Optimal Action Value Function" />
 
 #### Epsilon Greedy Algorithm
-One challenge with the Q-function above is choosing which action to take while the agent is still learning the optimal policy. Should the agent choose an action based on the Q-values observed thus far? Or, should the agent try a new action in hopes of earning a higher reward? This is known as the **exploration vs. exploitation dilemma**.
+The agent has to choose between performing an action based on already observed ergo known Q-values or try a completly new action with the chance of earning a higher reward and discovering new strategies. This is called the **exploration vs. exploitation dilemma**.
 
-To address this, I implemented an **𝛆-greedy algorithm**. This algorithm allows the agent to systematically manage the exploration vs. exploitation trade-off. The agent "explores" by picking a random action with some probability epsilon `𝛜`. However, the agent continues to "exploit" its knowledge of the environment by choosing actions based on the policy with probability (1-𝛜).
+To solve this, an **𝛆-greedy algorithm** was implemented. This algorithm allows the agent to systematically manage the exploration vs. exploitation trade-off. The agent "explores" by picking a random action with some probability epsilon `𝛜`. However, the agent continues to "exploit" its knowledge of the environment by choosing actions based on the policy with probability (1-𝛜).
 
 Furthermore, the value of epsilon is purposely decayed over time, so that the agent favors exploration during its initial interactions with the environment, but increasingly favors exploitation as it gains more experience. The starting and ending values for epsilon, and the rate at which it decays are three hyperparameters that are later tuned during experimentation.
 
 You can find the 𝛆-greedy logic implemented as part of the `agent.act()` method [here](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/dqn_agent.py#L65) in `agent.py` of the source code.
-
 
 #### Deep Q-Network (DQN)
 With Deep Q-Learning, a deep neural network is used to approximate the Q-function. Given a network `F`, finding an optimal policy is a matter of finding the best weights `w` such that `F(s,a,w) ≈ Q(s,a)`.
 
 The neural network architecture used for this project can be found [here](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/model.py#L23) in the `model.py` file of the source code. The network contains three fully connected layers with 64, 64, and 4 nodes respectively.
 
-As for the network inputs, rather than feeding-in sequential batches of experience tuples, I randomly sample from a history of experiences using an approach called Experience Replay.
-
+As for the network inputs, rather than feeding-in sequential batches of experience tuples, random samples from a history of experiences are used to reduce correlation between the tuples. This approach is called Experience Replay.
 
 #### Experience Replay
 Experience replay allows the RL agent to learn from past experience.
@@ -95,7 +90,7 @@ The implementation of the replay buffer can be found [here](https://github.com/T
 
 
 #### Double Deep Q-Network (DDQN)
-One issue with Deep Q-Networks is they can overestimate Q-values (see [Thrun & Schwartz, 1993](https://www.ri.cmu.edu/pub_files/pub1/thrun_sebastian_1993_1/thrun_sebastian_1993_1.pdf)). The accuracy of the Q-values depends on which actions have been tried and which states have been explored. If the agent hasn't gathered enough experiences, the Q-function will end up selecting the maximum value from a noisy set of reward estimates. Early in the learning process, this can cause the algorithm to propagate incidentally high rewards that were obtained by chance (exploding Q-values). This could also result in fluctuating Q-values later in the process.
+One issue with Deep Q-Networks is the possible overestimation of Q-values. The accuracy of the Q-values depends on which actions have been tried and which states have been explored. If the agent hasn't gathered enough experiences, the Q-function will end up selecting the maximum value from a noisy set of reward estimates. Early in the learning phase, this can cause the algorithm to propagate incidentally high rewards that were obtained by chance (exploding Q-values). This could also result in fluctuating Q-values later in the process.
 
 <img src="images/overestimating-Q-values.png" width="50%" align="top-left" alt="" title="Overestimating Q-values" />
 
@@ -134,7 +129,7 @@ It is a video showing the agent's progress as it goes from randomly selecting ac
 - **Test the replay buffer** &mdash; Implement a way to enable/disable the replay buffer. As mentioned before, all agents utilized the replay buffer. Therefore, the test results don't measure the impact the replay buffer has on performance.
 - **Add *prioritized* experience replay** &mdash; Rather than selecting experience tuples randomly, prioritized replay selects experiences based on a priority value that is correlated with the magnitude of error. This can improve learning by increasing the probability that rare and important experience vectors are sampled.
 - **Use a CNN with more layers and more nodes**
-- **Replace conventional exploration heuristics with Noisy DQN** &mdash; This approach is explained [here](https://arxiv.org/abs/1706.10295) in this research paper. The key takeaway is that parametric noise is added to the weights to induce stochasticity to the agent's policy, yielding more efficient exploration.
+
 
 ### Getting Started
 
