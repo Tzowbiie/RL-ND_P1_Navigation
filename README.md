@@ -97,11 +97,11 @@ The implementation of the replay buffer can be found [here](https://github.com/T
 #### Double Deep Q-Network (DDQN)
 One issue with Deep Q-Networks is they can overestimate Q-values (see [Thrun & Schwartz, 1993](https://www.ri.cmu.edu/pub_files/pub1/thrun_sebastian_1993_1/thrun_sebastian_1993_1.pdf)). The accuracy of the Q-values depends on which actions have been tried and which states have been explored. If the agent hasn't gathered enough experiences, the Q-function will end up selecting the maximum value from a noisy set of reward estimates. Early in the learning process, this can cause the algorithm to propagate incidentally high rewards that were obtained by chance (exploding Q-values). This could also result in fluctuating Q-values later in the process.
 
-<img src="assets/overestimating-Q-values.png" width="50%" align="top-left" alt="" title="Overestimating Q-values" />
+<img src="images/overestimating-Q-values.png" width="50%" align="top-left" alt="" title="Overestimating Q-values" />
 
 We can address this issue using Double Q-Learning, where one set of parameters `w` is used to select the best action, and another set of parameters `w'` is used to evaluate that action.  
 
-<img src="assets/DDQN-slide.png" width="40%" align="top-left" alt="" title="DDQN" />
+<img src="images/DDQN-slide.png" width="40%" align="top-left" alt="" title="DDQN" />
 
 The DDQN implementation can be found [here](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/dqn_agent.py#L94) in the `agent.py` file of the source code.
 
@@ -109,7 +109,7 @@ The DDQN implementation can be found [here](https://github.com/Tzowbiie/RL-ND_P1
 #### Dueling Agents
 Dueling networks utilize two streams: one that estimates the state value function `V(s)`, and another that estimates the advantage for each action `A(s,a)`. These two values are then combined to obtain the desired Q-values.  
 
-<img src="assets/dueling-networks-slide.png" width="60%" align="top-left" alt="" title="DDQN" />
+<img src="images/dueling-networks-slide.png" width="60%" align="top-left" alt="" title="DDQN" />
 
 The reasoning behind this approach is that state values don't change much across actions, so it makes sense to estimate them directly. However, we still want to measure the impact that individual actions have in each state, hence the need for the advantage function.
 
@@ -121,7 +121,7 @@ The dueling agents are implemented within the fully connected layers [here](http
 ### 5. Select best performing agent
 The best performing agents were able to solve the environment in 200-250 episodes. While this set of agents included ones that utilized Double DQN and Dueling DQN, at the end, the top performing agent was a simple DQN with replay buffer.
 
-<img src="assets/best-agent-graph.png" width="50%" align="top-left" alt="" title="Best Agent Graph" />
+<img src="images/best-agent-graph.png" width="50%" align="top-left" alt="" title="Best Agent Graph" />
 
 The complete set of results and steps can be found in [this notebook](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/Navigation.ipynb).
 
