@@ -121,7 +121,7 @@ The dueling agents are implemented within the fully connected layers [here](http
 ### 5. Select best performing agent
 The best performing agents were able to solve the environment in 200-250 episodes. While this set of agents included ones that utilized Double DQN and Dueling DQN, at the end, the top performing agent was a simple DQN with replay buffer.
 
-<img src="images/best-agent-graph.png" width="50%" align="top-left" alt="" title="Best Agent Graph" />
+<img src="images/best-agent-graph.PNG" width="50%" align="top-left" alt="" title="Best Agent Graph" />
 
 The complete set of results and steps can be found in [this notebook](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/Navigation.ipynb).
 
