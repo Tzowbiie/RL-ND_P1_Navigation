@@ -72,15 +72,15 @@ In the following sections, I'll describe each component of the algorithm in deta
 #### Q-Function
 To discover an optimal policy, a Q-function is used. The Q-function calculates the expected reward `R` for all possible actions `A` in all possible states `S`.
 
-<img src="assets/Q-function.png" width="19%" align="top-left" alt="" title="Q-function" />
+<img src="images/Q-function.png" width="19%" align="top-left" alt="" title="Q-function" />
 
 We can then define our optimal policy `π*` as the action that maximizes the Q-function for a given state across all possible states. The optimal Q-function `Q*(s,a)` maximizes the total expected reward for an agent starting in state `s` and choosing action `a`, then following the optimal policy for each subsequent state.
 
-<img src="assets/optimal-policy-equation.png" width="47%" align="top-left" alt="" title="Optimal Policy Equation" />
+<img src="images/optimal-policy-equation.png" width="47%" align="top-left" alt="" title="Optimal Policy Equation" />
 
 In order to discount returns at future time steps, the Q-function can be expanded to include the hyperparameter gamma `γ`.
 
-<img src="assets/optimal-action-value-function.png" width="67%" align="top-left" alt="" title="Optimal Action Value Function" />
+<img src="images/optimal-action-value-function.png" width="67%" align="top-left" alt="" title="Optimal Action Value Function" />
 ### (Optional) Challenge: Learning from Pixels
 
 After you have successfully completed the project, if you're looking for an additional challenge, you have come to the right place!  In the project, your agent learned from information such as its velocity, along with ray-based perception of objects around its forward direction.  A more challenging task would be to learn directly from pixels!
