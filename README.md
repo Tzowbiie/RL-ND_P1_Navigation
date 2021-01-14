@@ -4,13 +4,13 @@
 
 # Project 1: Navigation
 
-### Introduction
+### 1. Introduction
 
-For this project, you will train an agent to navigate (and collect bananas!) in a large, square world.  
+For this project, I had to train an agent to navigate (and collect bananas!) in a large, square world.  
 
 ![Trained Agent][image1]
 
-A reward of +1 is provided for collecting a yellow banana, and a reward of -1 is provided for collecting a blue banana.  Thus, the goal of your agent is to collect as many yellow bananas as possible while avoiding blue bananas.  
+A reward of +1 is provided for collecting a yellow banana, and a reward of -1 is provided for collecting a blue banana.  Thus, the goal of the agent is to collect as many yellow bananas as possible while avoiding blue bananas.  
 
 The state space has 37 dimensions and contains the agent's velocity, along with ray-based perception of objects around agent's forward direction.  Given this information, the agent has to learn how to best select actions.  Four discrete actions are available, corresponding to:
 - **`0`** - move forward.
@@ -18,7 +18,7 @@ The state space has 37 dimensions and contains the agent's velocity, along with 
 - **`2`** - turn left.
 - **`3`** - turn right.
 
-The task is episodic, and in order to solve the environment, your agent must get an average score of +13 over 100 consecutive episodes.
+The task is episodic, and in order to solve the environment, the agent must get an average score of +13 over 100 consecutive episodes.
 
 ### Getting Started
 
@@ -38,6 +38,49 @@ The task is episodic, and in order to solve the environment, your agent must get
 
 Follow the instructions in `Navigation.ipynb` to get started with training your own agent!  
 
+### 2. Establish Baseline
+Before building an agent that learns, I started by testing an agent that selects actions randomly at each time step.
+
+```python
+env_info = env.reset(train_mode=False)[brain_name] # reset the environment
+state = env_info.vector_observations[0]            # get the current state
+score = 0                                          # initialize the score
+while True:
+    action = np.random.randint(action_size)        # select an action
+    env_info = env.step(action)[brain_name]        # send the action to the environment
+    next_state = env_info.vector_observations[0]   # get the next state
+    reward = env_info.rewards[0]                   # get the reward
+    done = env_info.local_done[0]                  # see if episode has finished
+    score += reward                                # update the score
+    state = next_state                             # roll over the state to next time step
+    if done:                                       # exit loop if episode finished
+        break
+
+print("Score: {}".format(score))
+```
+
+Running this agent a few times resulted in scores from -2 to 2. Obviously randomness doens't help to reach a score of +13.
+
+
+### 3. Implementation of a Learning Algorithm
+Agents use a policy to decide which actions to take within an environment. The primary objective of the learning algorithm is to find an optimal policy&mdash;i.e., a policy that maximizes the reward for the agent. Since the effects of possible actions aren't known in advance, the optimal policy must be discovered by interacting with the environment and recording observations. Therefore, the agent "learns" the policy through a process of trial-and-error that iteratively maps various environment states to the actions that yield the highest reward. This type of algorithm is called **Q-Learning**.
+
+As for constructing the Q-Learning algorithm, the general approach is to implement a handful of different components, then run a series of tests to determine which combination of components and which hyperparameters yield the best results.
+
+In the following sections, I'll describe each component of the algorithm in detail.
+
+#### Q-Function
+To discover an optimal policy, a Q-function is used. The Q-function calculates the expected reward `R` for all possible actions `A` in all possible states `S`.
+
+<img src="assets/Q-function.png" width="19%" align="top-left" alt="" title="Q-function" />
+
+We can then define our optimal policy `π*` as the action that maximizes the Q-function for a given state across all possible states. The optimal Q-function `Q*(s,a)` maximizes the total expected reward for an agent starting in state `s` and choosing action `a`, then following the optimal policy for each subsequent state.
+
+<img src="assets/optimal-policy-equation.png" width="47%" align="top-left" alt="" title="Optimal Policy Equation" />
+
+In order to discount returns at future time steps, the Q-function can be expanded to include the hyperparameter gamma `γ`.
+
+<img src="assets/optimal-action-value-function.png" width="67%" align="top-left" alt="" title="Optimal Action Value Function" />
 ### (Optional) Challenge: Learning from Pixels
 
 After you have successfully completed the project, if you're looking for an additional challenge, you have come to the right place!  In the project, your agent learned from information such as its velocity, along with ray-based perception of objects around its forward direction.  A more challenging task would be to learn directly from pixels!
