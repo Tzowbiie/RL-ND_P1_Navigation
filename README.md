@@ -123,7 +123,7 @@ The best performing agents were able to solve the environment in 200-250 episode
 
 <img src="assets/best-agent-graph.png" width="50%" align="top-left" alt="" title="Best Agent Graph" />
 
-The complete set of results and steps can be found in [this notebook](Navigation_final.ipynb).
+The complete set of results and steps can be found in [this notebook](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/Navigation.ipynb).
 
 Tommy Tracey, a former Udacity student loaded a video up to Youtube: [here](https://youtu.be/NZd1PoeBoro) 
 It is a video showing the agent's progress as it goes from randomly selecting actions to learning a policy that maximizes rewards.
