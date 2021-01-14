@@ -56,15 +56,15 @@ In the following sections, I'll describe each component of the algorithm in deta
 #### Q-Function
 To discover an optimal policy, a Q-function is used. The Q-function calculates the expected reward `R` for all possible actions `A` in all possible states `S`.
 
-<img src="images/Q-function.png" width="19%" align="top-left" alt="" title="Q-function" />
+<img src="images/Q-function.png" width="15%" align="top-left" alt="" title="Q-function" />
 
 We can then define our optimal policy `π*` as the action that maximizes the Q-function for a given state across all possible states. The optimal Q-function `Q*(s,a)` maximizes the total expected reward for an agent starting in state `s` and choosing action `a`, then following the optimal policy for each subsequent state.
 
-<img src="images/optimal-policy-equation.png" width="47%" align="top-left" alt="" title="Optimal Policy Equation" />
+<img src="images/optimal-policy-equation.png" width="45%" align="top-left" alt="" title="Optimal Policy Equation" />
 
 In order to discount returns at future time steps, the Q-function can be expanded to include the hyperparameter gamma `γ`.
 
-<img src="images/optimal-action-value-function.png" width="67%" align="top-left" alt="" title="Optimal Action Value Function" />
+<img src="images/optimal-action-value-function.png" width="65%" align="top-left" alt="" title="Optimal Action Value Function" />
 
 #### Epsilon Greedy Algorithm
 One challenge with the Q-function above is choosing which action to take while the agent is still learning the optimal policy. Should the agent choose an action based on the Q-values observed thus far? Or, should the agent try a new action in hopes of earning a higher reward? This is known as the **exploration vs. exploitation dilemma**.
@@ -73,13 +73,13 @@ To address this, I implemented an **𝛆-greedy algorithm**. This algorithm allo
 
 Furthermore, the value of epsilon is purposely decayed over time, so that the agent favors exploration during its initial interactions with the environment, but increasingly favors exploitation as it gains more experience. The starting and ending values for epsilon, and the rate at which it decays are three hyperparameters that are later tuned during experimentation.
 
-You can find the 𝛆-greedy logic implemented as part of the `agent.act()` method [here](https://github.com/tommytracey/DeepRL-P1-Navigation/blob/master/agent.py#L66) in `agent.py` of the source code.
+You can find the 𝛆-greedy logic implemented as part of the `agent.act()` method [here](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/dqn_agent.py#L65) in `agent.py` of the source code.
 
 
 #### Deep Q-Network (DQN)
 With Deep Q-Learning, a deep neural network is used to approximate the Q-function. Given a network `F`, finding an optimal policy is a matter of finding the best weights `w` such that `F(s,a,w) ≈ Q(s,a)`.
 
-The neural network architecture used for this project can be found [here](https://github.com/tommytracey/DeepRL-P1-Navigation/blob/master/model.py#L5) in the `model.py` file of the source code. The network contains three fully connected layers with 64, 64, and 4 nodes respectively. Testing of bigger networks (more nodes) and deeper networks (more layers) did not produce better results.
+The neural network architecture used for this project can be found [here](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/model.py#L23) in the `model.py` file of the source code. The network contains three fully connected layers with 64, 64, and 4 nodes respectively.
 
 As for the network inputs, rather than feeding-in sequential batches of experience tuples, I randomly sample from a history of experiences using an approach called Experience Replay.
 
@@ -91,7 +91,7 @@ Each experience is stored in a replay buffer as the agent interacts with the env
 
 Also, experience replay improves learning through repetition. By doing multiple passes over the data, our agent has multiple opportunities to learn from a single experience tuple. This is particularly useful for state-action pairs that occur infrequently within the environment.
 
-The implementation of the replay buffer can be found [here](https://github.com/tommytracey/DeepRL-P1-Navigation/blob/master/agent.py#L133) in the `agent.py` file of the source code.
+The implementation of the replay buffer can be found [here](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/dqn_agent.py#L129) in the `agent.py` file of the source code.
 
 
 #### Double Deep Q-Network (DDQN)
@@ -103,7 +103,7 @@ We can address this issue using Double Q-Learning, where one set of parameters `
 
 <img src="assets/DDQN-slide.png" width="40%" align="top-left" alt="" title="DDQN" />
 
-The DDQN implementation can be found [here](https://github.com/tommytracey/DeepRL-P1-Navigation/blob/master/agent.py#L96) in the `agent.py` file of the source code.
+The DDQN implementation can be found [here](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/dqn_agent.py#L94) in the `agent.py` file of the source code.
 
 
 #### Dueling Agents
@@ -113,25 +113,27 @@ Dueling networks utilize two streams: one that estimates the state value functio
 
 The reasoning behind this approach is that state values don't change much across actions, so it makes sense to estimate them directly. However, we still want to measure the impact that individual actions have in each state, hence the need for the advantage function.
 
-The dueling agents are implemented within the fully connected layers [here](https://github.com/tommytracey/DeepRL-P1-Navigation/blob/master/model.py#L21) in the `model.py` file of the source code.
+The dueling agents are implemented within the fully connected layers [here](https://github.com/Tzowbiie/RL-ND_P1_Navigation/blob/main/model.py#L33) in the `model.py` file of the source code.
 
 
 ##### &nbsp;
 
 ### 5. Select best performing agent
-The best performing agents were able to solve the environment in 200-250 episodes. While this set of agents included ones that utilized Double DQN and Dueling DQN, ultimately, the top performing agent was a simple DQN with replay buffer.
+The best performing agents were able to solve the environment in 200-250 episodes. While this set of agents included ones that utilized Double DQN and Dueling DQN, at the end, the top performing agent was a simple DQN with replay buffer.
 
 <img src="assets/best-agent-graph.png" width="50%" align="top-left" alt="" title="Best Agent Graph" />
 
 The complete set of results and steps can be found in [this notebook](Navigation_final.ipynb).
 
-Also, [here](https://youtu.be/NZd1PoeBoro) is a video showing the agent's progress as it goes from randomly selecting actions to learning a policy that maximizes rewards.
+Tommy Tracey, a former Udacity student loaded a video up to Youtube: [here](https://youtu.be/NZd1PoeBoro) 
+It is a video showing the agent's progress as it goes from randomly selecting actions to learning a policy that maximizes rewards.
 
-<a href="https://youtu.be/NZd1PoeBoro"><img src="assets/video-thumbnail.png" width="40%" align="top-left" alt="" title="Banana Agent Video" /></a>
+<a href="https://youtu.be/NZd1PoeBoro"><img src="images/video-thumbnail.png" width="40%" align="top-left" alt="" title="Banana Agent Video" /></a>
 
 ## Future Improvements
 - **Test the replay buffer** &mdash; Implement a way to enable/disable the replay buffer. As mentioned before, all agents utilized the replay buffer. Therefore, the test results don't measure the impact the replay buffer has on performance.
 - **Add *prioritized* experience replay** &mdash; Rather than selecting experience tuples randomly, prioritized replay selects experiences based on a priority value that is correlated with the magnitude of error. This can improve learning by increasing the probability that rare and important experience vectors are sampled.
+- **Use a CNN with more layers and more nodes**
 - **Replace conventional exploration heuristics with Noisy DQN** &mdash; This approach is explained [here](https://arxiv.org/abs/1706.10295) in this research paper. The key takeaway is that parametric noise is added to the weights to induce stochasticity to the agent's policy, yielding more efficient exploration.
 
 ### Getting Started
